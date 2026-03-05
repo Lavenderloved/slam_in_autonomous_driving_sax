@@ -33,19 +33,23 @@ include_directories(${PCL_INCLUDE_DIRS})
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-# g2o 使用thirdparty中的
-include_directories(${PROJECT_SOURCE_DIR}/thirdparty/g2o/)
+# openmp
+find_package(OpenMP REQUIRED)
+
+# g2o
+find_package(g2o REQUIRED HINTS /usr/local/SAX_LIB/g2o-20241228/lib/cmake/g2o)
 set(g2o_libs
-        ${PROJECT_SOURCE_DIR}/thirdparty/g2o/lib/libg2o_stuff.so
-        ${PROJECT_SOURCE_DIR}/thirdparty/g2o/lib/libg2o_core.so
-	# ${PROJECT_SOURCE_DIR}/thirdparty/g2o/lib/libg2o_solver_cholmod.so
-        ${PROJECT_SOURCE_DIR}/thirdparty/g2o/lib/libg2o_solver_dense.so
-        ${PROJECT_SOURCE_DIR}/thirdparty/g2o/lib/libg2o_solver_csparse.so
-        ${PROJECT_SOURCE_DIR}/thirdparty/g2o/lib/libg2o_csparse_extension.so
-        ${PROJECT_SOURCE_DIR}/thirdparty/g2o/lib/libg2o_types_sba.so
-        ${CSPARSE_LIBRARY}
-        ${CHOLMOD_LIBRARY}
-        )
+    g2o::core
+    g2o::stuff
+    g2o::solver_dense
+    g2o::solver_csparse
+    g2o::solver_cholmod
+    g2o::csparse_extension
+    g2o::types_sba
+    OpenMP::OpenMP_CXX
+    ${CSPARSE_LIBRARY}
+    ${CHOLMOD_LIBRARY}
+)
 
 # ros
 # 为了2D scan, pointcloud2
@@ -59,12 +63,15 @@ find_package(catkin REQUIRED COMPONENTS
         )
 include_directories(${catkin_INCLUDE_DIRS})
 
-find_package(Pangolin REQUIRED)
+find_package(Pangolin REQUIRED HINTS /usr/local/SAX_LIB/Pangolin-0.9.4/lib/cmake/Pangolin)
 include_directories(${Pangolin_INCLUDE_DIRS})
 
 # yaml-cpp
 find_package(yaml-cpp REQUIRED)
 include_directories(${yaml-cpp_INCLUDE_DIRS})
+
+# gtest
+find_package(GTest REQUIRED)
 
 # 其他thirdparty下的内容
 include_directories(${PROJECT_SOURCE_DIR}/thirdparty/)
